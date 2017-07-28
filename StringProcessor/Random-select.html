@@ -1,0 +1,122 @@
+<!DOCTYPE>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="ext/bootstrap/css/bootstrap.min.css">
+<script  src="ext/jquery/jquery.min.js"></script>
+<script  src="ext/bootstrap/js/bootstrap.min.js"></script>
+<title></title>
+</head>
+<body class="container">
+	<div class="content">
+		<div class="row">
+			<div class="col-md-6">				
+				<button type="button" onclick="selectRandom()" class="btn btn-default" style="margin-bottom:10px ">convert</button>
+				<button type="button" onclick="cleardata()" class="btn btn-default" style="margin-bottom:10px ">Clear</button>
+				<button type="button" onclick="preFill()" class="btn btn-default" style="margin-bottom:10px ">Prefill</button>
+				<input type="text" id="Playercount" placeholder="Members count" class="form-control" style="margin-bottom:10px ">
+				<pre contenteditable="true" class="names" id="names" onpaste="normalizeData()" spellcheck="false"></pre>
+				<button type="button" onclick="selectRandom()" class="btn btn-default">convert</button>
+				<button type="button" onclick="cleardata()" class="btn btn-default">Clear</button>
+				<div id="placeholders"></div>
+			</div>
+			<div class="col-md-6">
+				<h2 style="display: none;" id="header">Result</h2>
+				<div id="result">
+					
+				</div>
+			</div>
+		</div>	
+	</div>	
+</body>
+<style type="text/css">
+	#htmlContnt{
+		height:300px;
+		width:500px;
+	}
+	.names{
+		min-height: 200px;
+		height: auto;
+		overflow-y: auto;
+		width: 100%;
+		border : 1px solid #ddd;
+		box-shadow: 1px 1px 6px 1px #DDD inset;
+    	background: #fff;
+    	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    	line-height: 1.6em;
+
+	}
+	.content{
+		margin-top:  90px
+	}
+</style>
+<script type="text/javascript">
+
+	function selectRandom(){
+		normalizeData();
+		var namesHtml = $("#names").html();
+		namesHtml = namesHtml.replace(/<br>/g,"");
+		var names = namesHtml.replace(/<\/div>/g,"").split("<div>");
+		var MembersCount = $("#Playercount").val();
+		var result = "";
+		var namesCopy = names.slice(0);
+		var randomNameArray = [];
+
+		for (var i = 0; i < names.length; i++) {			
+			var randomName = namesCopy[Math.floor(Math.random() * namesCopy.length)];
+			var randomNameIndex = namesCopy.indexOf(randomName);
+			if(randomNameIndex > -1){
+				namesCopy.splice(randomNameIndex,1);
+			}
+			randomNameArray.push(randomName)
+		}
+		console.log(names);
+		console.log(randomNameArray);
+		if(!MembersCount){
+			result = "Enter Members Count";
+		}else if(names.length % MembersCount == 0 ){
+			var teamsCount = names.length / MembersCount;
+			var membCounter = 0;
+			var teamNumber = 1;
+			for (var i = 0; i < randomNameArray.length; i++) {
+				if(membCounter >= MembersCount){
+					membCounter = 0;
+					result += "<hr>";
+				}
+				if(membCounter === 0){
+					result += "<h3>Team "+(teamNumber++)+"</h3>";
+				}
+				result += randomNameArray[i] + "<br>";				
+				membCounter++;					
+			}
+		}else{
+			result = "Not able to select teams"
+		}
+		$("#header").show();
+		$("#result").html(result);
+	}
+
+	function cleardata(){
+		$("#header").hide();
+		$("#result").html("");
+	}
+
+	function preFill(){
+		var names = "qwert<div>asdf</div><div>zxcvb</div><div>tyuui</div><div>pouu</div><div>lkh</div><div>bgt</div><div>eghu</div><div>rfvdg</div><div>dsfdsf dsfdsf</div>";
+		var MembersCount = 2;
+		$("#names").html(names);
+		$("#Playercount").val(MembersCount);
+	}
+
+	function normalizeData(){
+		var namesHtml = $("#names").html();
+		var names = namesHtml.split(/\n/);
+		var fomatedHtml = names[0];
+		for (var i = 1; i < names.length; i++) {
+			fomatedHtml += "<div>"+names[i]+"</div>";
+		}
+		fomatedHtml.replace("<br>","");
+		$("#names").html(fomatedHtml);
+
+	}
+</script>
+</html>

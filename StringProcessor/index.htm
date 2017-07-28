@@ -1,0 +1,104 @@
+<!DOCTYPE>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="ext/bootstrap/css/bootstrap.min.css">
+<script  src="ext/jquery/jquery.min.js"></script>
+<script  src="ext/bootstrap/js/bootstrap.min.js"></script>
+<title></title>
+</head>
+<body class="container">
+	<div class="content">
+		<div class="row">
+			<div class="col-md-12 row">
+				<div class="row">
+					<div class="col-md-12">
+						<h4>Context</h4>
+						<div  class="col-md-12 row">
+							<div class="col-md-7 row">
+								<input type="text"  name="" id="val" class="form-control">
+							</div>
+							<div class="col-md-5 row">
+								<button type="button" class="btn btn-default" onclick="convertVal()">convert</button>
+							</div>						
+						</div>
+						<div class="col-md-12 row">
+							<div id="formatedVal"></div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 row">	
+						<div class="col-md-7">	
+							<h4>Extract Placeholder</h4>
+							<textarea id="htmlContnt" class="form-control"></textarea>
+							<button type="button" class="btn btn-default" onclick="findPlaceholders()">convert</button>
+						</div>
+						<div class="col-md-5">	
+							<h4>Placeholders </h4>
+							<div id="placeholders"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+	</div>	
+</body>
+<style type="text/css">
+	#htmlContnt{
+		height:300px;
+		
+	}
+	#formatedVal{
+		height: 50px;
+		border: 1px solid #EFEFEF;
+		margin : 5px;
+		margin-left: 0;
+		padding: 15px 10px;
+	}
+	
+	.content{
+		margin-top:  90px
+	}
+</style>
+<script type="text/javascript">
+	function convertVal(){
+		var val = $("#val").val()
+		var fval = formatval(val);
+		$("#formatedVal").html(fval);
+	}
+	function formatval(x){ 
+	 	var c = x.replace(/\.[^/.]+$/, "");
+		var d = c[0];
+		for(i = 1;i<c.length;i++){
+
+		if(c[i] === c[i].toUpperCase() && c[i-1] !== "_" && c[i] !== "_" && c[i+1] &&  c[i+1] !== c[i+1].toUpperCase()	){
+				d+="_";
+				d+=c[i];
+			}else{
+				d+=c[i];
+			}
+		}
+		var r =  d.toUpperCase()
+		return  r;
+	} 
+	var avoidArr = ["EAECED","EEE","FFF","EFF","9BCD","EEEEEE","FFFFFF","DOCTYPE","DDD","BCBCBC"]
+
+	function findPlaceholders(){
+		var htmlContnt = $("#htmlContnt").val();
+		htmlContnt = htmlContnt.replace(/<!--[\s\S]*?-->/g,"").trim()
+		var regex = /([_,-]*[A-Z])([A-Z][_,-]*)+/gm;
+		var result = htmlContnt.match(regex);
+		var resultString = "";
+		result = result || "";
+		for (var i = 0; i < result.length; i++) {
+			if(avoidArr.indexOf(result[i]) < 0){
+				resultString += result[i]+"<br>"				
+			}
+		}
+		$("#placeholders").html(resultString);
+
+	}
+	/\<\!\-\-.*\-\-\>/
+
+</script>
+</html>
